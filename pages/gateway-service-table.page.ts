@@ -4,9 +4,12 @@ import { GatewayService } from "../entities/gateway-service";
 export class GatewayServiceTablePage extends BasePage {
   private static readonly TABLE_TR = "table tbody tr";
 
+  async waitForPageLoad() {
+    await super.waitForPageLoad(GatewayServiceTablePage.TABLE_TR);
+  }
+
   async getGatewayServices(): Promise<GatewayService[]> {
     const services: GatewayService[] = [];
-
     const rows = this.page.locator(GatewayServiceTablePage.TABLE_TR);
 
     for (let i = 0; i < await rows.count(); i++) {

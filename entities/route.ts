@@ -1,13 +1,15 @@
 export class Route {
-  public name: string;
-  public protocols: string[];
-  public hosts: string[];
-  public methods: string[];
-  public paths: string[];
-  public tags: string[];
+  name: string;
+  serviceName: string;
+  protocols: string[];
+  hosts: string[];
+  methods: string[];
+  paths: string[];
+  tags: string[];
 
-  constructor(name: string, protocols: string[], hosts: string[], methods: string[], paths: string[], tags: string[]) {
+  constructor(name: string, serviceName: string, protocols: string[], hosts: string[], methods: string[], paths: string[], tags: string[]) {
     this.name = name;
+    this.serviceName = serviceName;
     this.protocols = protocols;
     this.hosts = hosts;
     this.methods = methods;
@@ -23,6 +25,7 @@ export class Route {
   public equal(other: Route): boolean {
     return (
       this.name === other.name &&
+      this.serviceName === other.serviceName &&
       this.arraysEqual(this.protocols, other.protocols) &&
       this.arraysEqual(this.hosts, other.hosts) &&
       this.arraysEqual(this.methods, other.methods) &&
@@ -35,9 +38,10 @@ export class Route {
    * Returns the details of the Route object as a formatted string.
    * @returns string - Details of the Route.
    */
-  public getRouteDetails(): string {
+  toString(): string {
     return `
       Name: ${this.name}
+      Gateway Service Name: ${this.serviceName}
       Protocols: ${this.protocols.join(', ') || 'None'}
       Hosts: ${this.hosts.join(', ') || 'None'}
       Methods: ${this.methods.join(', ') || 'None'}

@@ -12,6 +12,10 @@ export class GatewayServiceDetailPage extends BasePage {
   static readonly ENABLED_SELECTOR = '[data-testid="enabled-property-value"] .badge-content-wrapper';
   static readonly TAGS_SELECTOR = '[data-testid^="tags-badge-tag"] .badge-content-wrapper';
 
+  async waitForPageLoad() {
+    await super.waitForPageLoad(GatewayServiceDetailPage.NAME_SELECTOR);
+  }
+
   private get container(): Locator {
     return this.page.locator(GatewayServiceDetailPage.CONTAINER_SELECTOR);
   }
@@ -48,7 +52,7 @@ export class GatewayServiceDetailPage extends BasePage {
     return (await this.container.locator(GatewayServiceDetailPage.TAGS_SELECTOR).allTextContents()).map((tag: string) => tag.trim());
   }
 
-  async extractGatewayServiceDefailInfo(): Promise<GatewayService> {
+  async extractGatewayServiceDetailInfo(): Promise<GatewayService> {
     const name = await this.getName();
     const protocol = await this.getProtocol();
     const host = await this.getHost();

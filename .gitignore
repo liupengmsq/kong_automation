@@ -41,6 +41,7 @@ coverage/
 # Playwright test files
 test-results/
 playwright-report/
+mochawesome-report/
 
 # Miscellaneous
 *.lock

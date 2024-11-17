@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import { Locator, Page } from 'playwright';
 import { SidebarComponent } from '../components/sidebar.component';
 
 export class BasePage {
@@ -36,13 +36,30 @@ export class BasePage {
     await this.page.locator(selector).fill(text);
   }
 
-  async isPageLoaded(): Promise<boolean> {
-    try {
-      await this.page.waitForFunction(() => document.readyState === 'complete');
-      return true;
-    } catch (error) {
-      console.error('Page load check failed:', error);
-      return false;
+  async waitForPageLoad(selector: string, timeout: number = 5000) {
+      const element = this.page.locator(selector);
+      await element.waitFor({ state: 'visible', timeout: timeout });
+  }
+
+  async waitForPageLoadByLocator(locator: Locator, timeout: number = 5000) {
+      await locator.waitFor({ state: 'visible', timeout: timeout });
+  }
+
+  async waitForDataLoad(apiUrlPart: string, selector: string = '', timeout: number = 5000): Promise<any> {
+    const response = await this.page.waitForResponse(
+      (res) =>
+        res.url().includes(apiUrlPart) && res.status() === 200,
+      { timeout }
+    );
+
+    const responseData = await response.json();
+    console.log('API Response Data:', responseData);
+
+    if(selector !== '') {
+      const element = this.page.locator(selector);
+      await element.waitFor({ state: 'visible' });
     }
+
+    return responseData;
   }
 }
