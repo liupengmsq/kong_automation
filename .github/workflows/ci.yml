@@ -31,11 +31,22 @@ jobs:
     - name: Install Playwright browsers
       run: npx playwright install
 
-    # Step 5: Run tests
+    # Step 5: Set up Docker Compose
+    - name: Set up Docker Compose
+      run: |
+        docker compose -f ./docker/docker-compose.yml up -d
+        docker ps
+
+    # Step 6: Run tests
     - name: Run tests
       run: npm run test
 
-    # Step 6: Upload Mochawesome report
+    # Step 7: Shutdown Docker Compose
+    - name: Shutdown Docker Compose
+      if: always()
+      run: docker compose -f ./docker/docker-compose.yml down
+
+    # Step 8: Upload Mochawesome report
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v3
