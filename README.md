@@ -39,3 +39,6 @@ mochawesome-report/mochawesome.html
 
 4. **Reporting:**
    - Incorporated `mochawesome` to generate comprehensive HTML test reports, aiding in result analysis and debugging.
+
+# CI
+Github actions: https://github.com/liupengmsq/kong_automation/actions/workflows/ci.yml
