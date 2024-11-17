@@ -1,0 +1,39 @@
+[
+  {
+    "service": {
+      "name": "Service1",
+      "protocol": "https",
+      "host": "www.test.com",
+      "port": 443,
+      "path": "/api",
+      "enabled": true,
+      "tags": [
+        "tag1",
+        "tag2",
+        "tag3"
+      ],
+      "routes": [
+        {
+          "name": "Route1",
+          "serviceName": "Service1",
+          "protocols": [
+            "https"
+          ],
+          "hosts": [
+            "-"
+          ],
+          "methods": [
+            "-"
+          ],
+          "paths": [
+            "/test"
+          ],
+          "tags": [
+            "route-tag1",
+            "route-tag2"
+          ]
+        }
+      ]
+    }
+  }
+]
