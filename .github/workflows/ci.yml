@@ -37,16 +37,31 @@ jobs:
         docker compose -f ./docker/docker-compose.yml up -d
         docker ps
 
-    # Step 6: Run tests
+    # Step 6: Test if http://localhost:8002/ is available
+    - name: Test if service is up
+      run: |
+        for i in {1..10}; do
+          if curl -s http://localhost:8002/; then
+            echo "Service is up!";
+            exit 0;
+          else
+            echo "Waiting for service to be available...";
+            sleep 5;
+          fi;
+        done;
+        echo "Service did not start in time!";
+        exit 1;
+
+    # Step 7: Run tests
     - name: Run tests
       run: npm run test
 
-    # Step 7: Shutdown Docker Compose
+    # Step 8: Shutdown Docker Compose
     - name: Shutdown Docker Compose
       if: always()
       run: docker compose -f ./docker/docker-compose.yml down
 
-    # Step 8: Upload Mochawesome report
+    # Step 9: Upload Mochawesome report
     - name: Upload Test Report
       if: always()
       uses: actions/upload-artifact@v3
