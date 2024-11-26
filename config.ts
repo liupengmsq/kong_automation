@@ -2,7 +2,7 @@ export const config = {
   baseURL: 'http://localhost:8002/',
   timeout: 15000,
   browserOptions: {
-    headless: false,
+    headless: true,
     timeout: 30000,
   },
   browserContextOptions: {
