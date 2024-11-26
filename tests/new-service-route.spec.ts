@@ -1,5 +1,6 @@
 import { chromium, Browser, Page } from 'playwright';
 import { assert } from 'chai';
+import { config } from '../config';
 import { WorkspacesPage } from '../pages/workspaces.page';
 import { WorkspaceOverviewPage } from '../pages/workspace-overview.page';
 import { NewGatewayServicePage } from '../pages/new-gateway-service.page';
@@ -38,17 +39,11 @@ describe('Playwright with Mocha and Chai', function () {
 
     console.log("Deleting all services");
     await deleteAllServicesConcurrently();
+    browser = await chromium.launch(config.browserOptions);
+    const context = await browser.newContext(config.browserContextOptions);
+    context.setDefaultTimeout(config.timeout);
 
-    // Launching browser with maximized window size
-    browser = await chromium.launch({
-      headless: true,
-      args: ['--start-maximized']
-    });
-    const context = await browser.newContext({
-      viewport: { width: 1920, height: 1080 },
-    });
     page = await context.newPage();
-
     workspacesPage = new WorkspacesPage(page);
     workspacesOverviewPage = new WorkspaceOverviewPage(page);
     createGatewayServicePage = new NewGatewayServicePage(page);
@@ -62,11 +57,30 @@ describe('Playwright with Mocha and Chai', function () {
   after(async () => {
     await browser.close();
   });
+
+  afterEach(async function () {
+    if (this.currentTest?.state === 'failed') {
+      const screenshotDir = path.resolve(__dirname, 'screenshots');
+      if (!fs.existsSync(screenshotDir)) {
+        fs.mkdirSync(screenshotDir);
+      }
+
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+
+      const screenshotPath = path.join(
+        screenshotDir,
+        `${this.currentTest.title?.replace(/[^a-zA-Z0-9]/g, '_')}_${timestamp}.png`
+      );
+      await page.screenshot({ path: screenshotPath });
+      console.log(`Screenshot saved at: ${screenshotPath}`);
+    }
+  });
+
   testData.forEach(({ service }: { service: any}) => {
     let serviceData: GatewayService = convertToObject(service);
     it(`Create one gateway service ${serviceData.name} and one related route`, async () => {
       console.log("Navigating to workspace page.");
-      await workspacesPage.navigateTo('http://localhost:8002/');
+      await workspacesPage.navigateTo(config.baseURL);
 
       console.log("Selecting default workspace.");
       await workspacesPage.selectWorkspace('default');
